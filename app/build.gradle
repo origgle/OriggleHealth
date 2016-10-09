@@ -1,0 +1,45 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.origgle.health"
+        minSdkVersion 14
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    android.applicationVariants.all { variant ->
+        //删除UnalignedAPK
+        variant.assemble.doLast {
+            variant.outputs.each { output ->
+                File unaligned = output.packageApplication.outputFile;
+                if (!unaligned.getName().equalsIgnoreCase(output.outputFile.getName())) {
+                    unaligned.delete()
+                }
+            }
+        }
+    }
+}
+
+project.ext {
+    dirName = "release";
+}
+
+task helloTask << {
+    println "### helloTask => " + project.ext.dirName;
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
